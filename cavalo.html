@@ -1,0 +1,860 @@
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+</title>
+<style type="text/css">
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f0f23;
+            color: #e2e8f0;
+            line-height: 1.6;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .container {
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Background layers */
+        .bg-base {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #0f172a, #581c87, #0f172a);
+        }
+
+        .bg-secondary {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(139, 92, 246, 0.3) 0%, transparent 50%, rgba(219, 39, 119, 0.2) 100%);
+        }
+
+        .bg-grid {
+            position: absolute;
+            inset: 0;
+            opacity: 0.2;
+            background-image: 
+                linear-gradient(rgba(139, 92, 246, 0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(139, 92, 246, 0.3) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        .accent-1 {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            width: 128px;
+            height: 128px;
+            background: rgba(239, 68, 68, 0.2);
+            border-radius: 50%;
+            filter: blur(48px);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        .accent-2 {
+            position: absolute;
+            bottom: 80px;
+            left: 40px;
+            width: 96px;
+            height: 96px;
+            background: rgba(239, 68, 68, 0.15);
+            border-radius: 50%;
+            filter: blur(32px);
+            animation: pulse 3s ease-in-out infinite;
+            animation-delay: 1.5s;
+        }
+
+        .noise {
+            position: absolute;
+            inset: 0;
+            opacity: 0.3;
+            mix-blend-mode: overlay;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 128px 128px;
+        }
+
+        /* Corner shadows */
+        .corner-shadows {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .corner-shadow {
+            position: absolute;
+            opacity: 0.3;
+        }
+
+        .corner-shadow-top-left {
+            top: 0;
+            left: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle at top left, 
+                rgba(0, 0, 0, 0.8) 0%, 
+                rgba(0, 0, 0, 0.4) 40%, 
+                transparent 70%);
+        }
+
+        .corner-shadow-top-right {
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle at top right, 
+                rgba(0, 0, 0, 0.8) 0%, 
+                rgba(0, 0, 0, 0.4) 40%, 
+                transparent 70%);
+        }
+
+        .corner-shadow-bottom-left {
+            bottom: 0;
+            left: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle at bottom left, 
+                rgba(0, 0, 0, 0.8) 0%, 
+                rgba(0, 0, 0, 0.4) 40%, 
+                transparent 70%);
+        }
+
+        .corner-shadow-bottom-right {
+            bottom: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle at bottom right, 
+                rgba(0, 0, 0, 0.8) 0%, 
+                rgba(0, 0, 0, 0.4) 40%, 
+                transparent 70%);
+        }
+
+        .edge-shadow-top {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 150px;
+            background: linear-gradient(to bottom, 
+                rgba(0, 0, 0, 0.3) 0%, 
+                rgba(0, 0, 0, 0.15) 50%, 
+                transparent 100%);
+        }
+
+        .edge-shadow-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 150px;
+            background: linear-gradient(to top, 
+                rgba(0, 0, 0, 0.3) 0%, 
+                rgba(0, 0, 0, 0.15) 50%, 
+                transparent 100%);
+        }
+
+        .edge-shadow-left {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 150px;
+            background: linear-gradient(to right, 
+                rgba(0, 0, 0, 0.3) 0%, 
+                rgba(0, 0, 0, 0.15) 50%, 
+                transparent 100%);
+        }
+
+        .edge-shadow-right {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            width: 150px;
+            background: linear-gradient(to left, 
+                rgba(0, 0, 0, 0.3) 0%, 
+                rgba(0, 0, 0, 0.15) 50%, 
+                transparent 100%);
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.2;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.4;
+                transform: scale(1.05);
+            }
+        }
+
+        /* Content */
+        .content {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 16px 16px 16px;
+        }
+
+        .post-container {
+            max-width: 896px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Enhanced macOS Tab */
+        .macos-tab {
+            background: rgba(31, 41, 55, 0.95);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 20px;
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(55, 65, 81, 0.6);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+
+        .macos-tab::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.5), transparent);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        .macos-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: rgba(17, 24, 39, 0.9);
+            border-radius: 20px 20px 0 0;
+            border-bottom: 1px solid rgba(55, 65, 81, 0.6);
+            backdrop-filter: blur(10px);
+        }
+
+        .macos-buttons {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .macos-button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn-red { 
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            box-shadow: 0 0 5px rgba(239, 68, 68, 0.5);
+        }
+        .btn-yellow { 
+            background: linear-gradient(135deg, #eab308, #ca8a04);
+            box-shadow: 0 0 5px rgba(234, 179, 8, 0.5);
+        }
+        .btn-green { 
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
+        }
+
+        .macos-title {
+            color: #9ca3af;
+            font-size: 14px;
+            font-weight: 700;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .macos-spacer {
+            width: 64px;
+        }
+
+        .macos-content {
+            padding: 24px;
+        }
+
+        /* Enhanced Content Boxes */
+        .content-box {
+            background: rgba(17, 24, 39, 0.9);
+            backdrop-filter: blur(15px) saturate(150%);
+            border-radius: 16px;
+            border-left: 4px solid;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 
+                0 10px 25px -3px rgba(0, 0, 0, 0.2),
+                0 0 0 1px rgba(255, 255, 255, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                        box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .content-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .content-box p {
+            color: #e5e7eb;
+            line-height: 1.75;
+            margin: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .border-blue { 
+            border-left-color: #3b82f6;
+            box-shadow: -4px 0 0 rgba(59, 130, 246, 0.3), 0 10px 25px -3px rgba(0, 0, 0, 0.2);
+        }
+        .border-green { 
+            border-left-color: #22c55e;
+            box-shadow: -4px 0 0 rgba(34, 197, 94, 0.3), 0 10px 25px -3px rgba(0, 0, 0, 0.2);
+        }
+        .border-yellow { 
+            border-left-color: #eab308;
+            box-shadow: -4px 0 0 rgba(234, 179, 8, 0.3), 0 10px 25px -3px rgba(0, 0, 0, 0.2);
+        }
+        .border-purple { 
+            border-left-color: #8b5cf6;
+            box-shadow: -4px 0 0 rgba(139, 92, 246, 0.3), 0 10px 25px -3px rgba(0, 0, 0, 0.2);
+        }
+        .border-red { 
+            border-left-color: #ef4444;
+            box-shadow: -4px 0 0 rgba(239, 68, 68, 0.3), 0 10px 25px -3px rgba(0, 0, 0, 0.2);
+        }
+        .border-cyan { 
+            border-left-color: #06b6d4;
+            box-shadow: -4px 0 0 rgba(6, 182, 212, 0.3), 0 10px 25px -3px rgba(0, 0, 0, 0.2);
+        }
+        .border-orange { 
+            border-left-color: #f97316;
+            box-shadow: -4px 0 0 rgba(249, 115, 22, 0.3), 0 10px 25px -3px rgba(0, 0, 0, 0.2);
+        }
+        .border-pink { 
+            border-left-color: #ec4899;
+            box-shadow: -4px 0 0 rgba(236, 72, 153, 0.3), 0 10px 25px -3px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Enhanced Glass Box */
+        .glass-box {
+            background: linear-gradient(135deg, 
+                rgba(139, 92, 246, 0.25), 
+                rgba(236, 72, 153, 0.2), 
+                rgba(59, 130, 246, 0.15)
+            );
+            backdrop-filter: blur(25px) saturate(200%);
+            border-radius: 20px;
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            padding: 28px;
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: glassShine 4s ease-in-out infinite;
+        }
+
+        @keyframes glassShine {
+            0% { left: -100%; }
+            50% { left: 100%; }
+            100% { left: 100%; }
+        }
+
+        .glass-box p {
+            color: #f8fafc;
+            line-height: 1.75;
+            text-align: center;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* FIXED: Enhanced Link Styles with Diffuse Underlines - ONLY for text links, NOT round elements */
+        .content-text a:not(.macos-button):not([class*="btn-"]) {
+            color: #60a5fa;
+            text-decoration: none;
+            transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            display: inline;
+            overflow: visible;
+        }
+
+        .content-text a:not(.macos-button):not([class*="btn-"])::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(96, 165, 250, 0.1) 10%, 
+                rgba(167, 139, 250, 0.3) 50%, 
+                rgba(96, 165, 250, 0.1) 90%, 
+                transparent 100%);
+            transform: translateY(-50%) scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .content-text a:not(.macos-button):not([class*="btn-"])::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(96, 165, 250, 0.3) 15%, 
+                #60a5fa 25%, 
+                #a78bfa 50%, 
+                #60a5fa 75%, 
+                rgba(96, 165, 250, 0.3) 85%, 
+                transparent 100%);
+            transform: translateY(-50%) scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.05s;
+        }
+
+        p {
+            font-size: 18px;
+            line-height: 1.75;
+            margin: 0;
+        }
+
+        /* Hover and Touch States */
+        @media (hover: hover) and (pointer: fine) {
+            .macos-tab:hover {
+                transform: translateY(-2px);
+                box-shadow: 
+                    0 35px 60px -12px rgba(0, 0, 0, 0.5),
+                    0 0 0 1px rgba(255, 255, 255, 0.08),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            }
+
+            .macos-button:hover {
+                transform: scale(1.2);
+                box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            }
+
+            .content-box:hover {
+                transform: translateY(-3px);
+                box-shadow: 
+                    0 20px 35px -3px rgba(0, 0, 0, 0.3),
+                    0 0 0 1px rgba(255, 255, 255, 0.08),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            }
+
+            .glass-box:hover {
+                transform: translateY(-5px) scale(1.02);
+                border-color: rgba(139, 92, 246, 0.6);
+                box-shadow: 
+                    0 35px 70px -12px rgba(0, 0, 0, 0.5),
+                    0 0 0 1px rgba(255, 255, 255, 0.15),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            }
+
+            .content-text a:not(.macos-button):not([class*="btn-"]):hover {
+                color: #93c5fd;
+                transform: translateY(-1px);
+            }
+
+            .content-text a:not(.macos-button):not([class*="btn-"]):hover::before {
+                transform: translateY(-50%) scaleX(1);
+            }
+
+            .content-text a:not(.macos-button):not([class*="btn-"]):hover::after {
+                transform: translateY(-50%) scaleX(1);
+            }
+        }
+
+        /* Mobile Touch Support - FIXED ANIMATIONS */
+        @media (hover: none) and (pointer: coarse) {
+            .macos-tab {
+                transform: translateY(-2px);
+                box-shadow: 
+                    0 35px 60px -12px rgba(0, 0, 0, 0.5),
+                    0 0 0 1px rgba(255, 255, 255, 0.08),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            }
+
+            .content-box {
+                transform: translateY(-3px);
+                box-shadow: 
+                    0 20px 35px -3px rgba(0, 0, 0, 0.3),
+                    0 0 0 1px rgba(255, 255, 255, 0.08),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            }
+
+            .glass-box {
+                transform: translateY(-5px) scale(1.02);
+                border-color: rgba(139, 92, 246, 0.6);
+                box-shadow: 
+                    0 35px 70px -12px rgba(0, 0, 0, 0.5),
+                    0 0 0 1px rgba(255, 255, 255, 0.15),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            }
+
+            .macos-button:active {
+                transform: scale(1.2);
+                box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            }
+
+            .content-text a:not(.macos-button):not([class*="btn-"]):active {
+                color: #93c5fd;
+                transform: translateY(-1px);
+            }
+
+            .content-text a:not(.macos-button):not([class*="btn-"]):active::before {
+                transform: translateY(-50%) scaleX(1);
+            }
+
+            .content-text a:not(.macos-button):not([class*="btn-"]):active::after {
+                transform: translateY(-50%) scaleX(1);
+            }
+        }
+
+        /* MOBILE RESPONSIVE - SIGNIFICANTLY REDUCED SIZES */
+        @media (max-width: 768px) {
+            .content {
+                padding: 32px 8px 8px 8px;
+            }
+
+            .post-container {
+                gap: 12px;
+            }
+
+            .macos-tab {
+                margin-bottom: 16px;
+            }
+
+            .macos-content {
+                padding: 12px;
+            }
+
+            .content-box {
+                padding: 12px;
+                border-radius: 12px;
+                margin-bottom: 12px;
+            }
+
+            .glass-box {
+                padding: 16px;
+                border-radius: 16px;
+            }
+
+            p {
+                font-size: 14px;
+            }
+
+            .bg-grid {
+                background-size: 30px 30px;
+            }
+
+            .accent-1, .accent-2 {
+                width: 64px;
+                height: 64px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .content {
+                padding: 24px 6px 6px 6px;
+            }
+
+            .post-container {
+                gap: 8px;
+            }
+
+            .macos-tab {
+                margin-bottom: 12px;
+                border-radius: 16px;
+            }
+
+            .macos-content {
+                padding: 8px;
+            }
+
+            .content-box {
+                padding: 8px;
+                border-radius: 8px;
+                margin-bottom: 8px;
+            }
+
+            .glass-box {
+                padding: 12px;
+                border-radius: 12px;
+            }
+
+            p {
+                font-size: 12px;
+            }
+
+            .bg-grid {
+                background-size: 25px 25px;
+            }
+
+            .accent-1, .accent-2 {
+                width: 48px;
+                height: 48px;
+            }
+
+            .corner-shadow-top-left,
+            .corner-shadow-top-right,
+            .corner-shadow-bottom-left,
+            .corner-shadow-bottom-right {
+                width: 200px;
+                height: 200px;
+            }
+
+            .edge-shadow-top,
+            .edge-shadow-bottom {
+                height: 100px;
+            }
+
+            .edge-shadow-left,
+            .edge-shadow-right {
+                width: 100px;
+            }
+        }</style>
+<div class="container">
+	<div class="bg-base">
+		&nbsp;
+	</div>
+
+	<div class="bg-secondary">
+		&nbsp;
+	</div>
+
+	<div class="bg-grid">
+		&nbsp;
+	</div>
+
+	<div class="accent-1">
+		&nbsp;
+	</div>
+
+	<div class="accent-2">
+		&nbsp;
+	</div>
+
+	<div class="noise">
+		&nbsp;
+	</div>
+
+	<div class="corner-shadows">
+		<div class="corner-shadow corner-shadow-top-left">
+			&nbsp;
+		</div>
+
+		<div class="corner-shadow corner-shadow-top-right">
+			&nbsp;
+		</div>
+
+		<div class="corner-shadow corner-shadow-bottom-left">
+			&nbsp;
+		</div>
+
+		<div class="corner-shadow corner-shadow-bottom-right">
+			&nbsp;
+		</div>
+
+		<div class="edge-shadow-top">
+			&nbsp;
+		</div>
+
+		<div class="edge-shadow-bottom">
+			&nbsp;
+		</div>
+
+		<div class="edge-shadow-left">
+			&nbsp;
+		</div>
+
+		<div class="edge-shadow-right">
+			&nbsp;
+		</div>
+	</div>
+
+	<div class="content">
+		<div class="post-container">
+			<div class="macos-tab">
+				<div class="macos-header">
+					<div class="macos-buttons">
+						<div class="macos-button btn-red">
+							&nbsp;
+						</div>
+
+						<div class="macos-button btn-yellow">
+							&nbsp;
+						</div>
+
+						<div class="macos-button btn-green">
+							&nbsp;
+						</div>
+					</div>
+
+					<div class="macos-title">
+						&nbsp;
+					</div>
+
+					<div class="macos-spacer">
+						&nbsp;
+					</div>
+				</div>
+
+				<div class="macos-content">
+					<p>
+						<span style="font-size: 24px;"><b>Voltei cambada de z&eacute; piolho</b> </span>
+					</p>
+				</div>
+			</div>
+
+			<div class="content-box border-blue">
+				<div class="content-text">
+					<p style="text-align: center;">
+						<span style="font-size: 18px;"><span style="text-align: center;"><span style="font-family: Verdana, Geneva, sans-serif;"><b><i><br>
+						O post de hoje vai ser direto ao ponto, pra quem n&atilde;o viu na minha &uacute;ltima postagem no f&oacute;rum onde eu entreguei o ouro lapidado pra voc&ecirc; fazer no m&iacute;nimo 100k por m&ecirc;s com ecommerce. </i> <img alt="😈" class="ipsEmoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f608.png"></b> </span> </span> </span>
+					</p>
+
+					<p style="text-align: center;">
+						&nbsp;
+					</p>
+
+					<p style="text-align: center;">
+						<span style="font-size:18px;"><em><strong><a href="https://blacksidersociety.com/topic/3294-%E2%98%A3%EF%B8%8F-fa%C3%A7a-100k-em-3-meses-com-ecommerce-sem-gastar-1-real-com-tr%C3%A1fego-ou-morra-tentando-%E2%98%A3%EF%B8%8F/" rel="" target="_blank">https://www.blacksidersociety.pro/topic/3294-<img alt="☣️" class="ipsEmoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/2623.png">-fa&ccedil;a-100k-em-3-meses-com-ecommerce-sem-gastar-1-real-com-tr&aacute;fego-ou-morra-tentando-<img alt="☣️" class="ipsEmoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/2623.png">/ </a> </strong></em></span>
+					</p>
+
+					<p style="text-align: center;">
+						<br>
+						<span style="font-size: 18px;"><strong><em>L&aacute; eu prometi que se batesse +40 rea&ccedil;&otilde;es eu soltaria uma ferramenta de research para achar qualquer fornecedor. E n&atilde;o estou falando somente de achar o fornecedor do seu concorrente, como buscar direto nas maiores plataformas de negocia&ccedil;&atilde;o chinesas. Alibaba, Taobao, 1688... </em></strong> </span><br>
+						&nbsp;
+					</p>
+				</div>
+			</div>
+
+			<div class="content-box border-yellow" style="text-align: center;">
+				<div class="content-text">
+					<br>
+					<span style="font-size: 18px;"><em><strong><span style="color: #ecf0f1;">No momento que eu estou soltando essa postagem, o site oficial da ferramenta est&aacute; offline no Brasil, mas relaxa que o pai deu um jeito <img alt="🫡" class="ipsEmoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1fae1.png"><img alt="🫢" class="ipsEmoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1fae2.png">. Primeiro baixa a extens&atilde;o Troywell </span><br>
+					<br>
+					<a href="https://chromewebstore.google.com/detail/vpn-gratuito-para-o-chrom/adlpodnneegcnbophopdmhedicjbcgco" rel="external nofollow" target="_blank">https://chromewebstore.google.com/detail/vpn-gratuito-para-o-chrom/adlpodnneegcnbophopdmhedicjbcgco </a><br>
+					<br>
+					<span style="color: #ecf0f1;">Fica tranquilo que s&oacute; vai precisar dela no in&iacute;cio. Coloca na cidade Hong Kong, e depois acessa o </span> <a href="https://www.aliprice.com/" rel="external nofollow" target="_blank"> <span style="color: #ecf0f1;">&gt; site oficial &lt;</span> </a> </strong></em> </span><br>
+					&nbsp;
+				</div>
+			</div>
+
+			<div class="content-box border-purple">
+				<div class="content-text">
+					<p style="text-align: center;">
+						<br>
+						<em><strong>Rolando um pouco pra baixo voc&ecirc; vai ver uma tela como essa:</strong></em><br>
+						<br>
+						<a class="ipsAttachLink ipsAttachLink_image" data-fileext="png" data-fileid="7693" href="//media.invisioncic.com/r328678/monthly_2025_06/Capturadetela2025-06-15230756.png.f86013341336c16cf5693af06758c69c.png" rel=""><img alt="Captura de tela 2025-06-15 230756.png" class="ipsImage ipsImage_thumbnailed" data-fileid="7693" data-loaded="true" data-ratio="41.30" data-src="//media.invisioncic.com/r328678/monthly_2025_06/Capturadetela2025-06-15230756.thumb.png.a87850d0994b0861dea8b3dc11f98276.png" data-unique="7geqqlly2" src="https://blacksidersociety.com/applications/core/interface/js/spacer.png" style="height: auto;" width="1000"></a><br>
+						<br>
+						<strong><em>Instale apenas os principais como os que eu citei l&aacute; em cima. Depois basta ir no seu marketplace ou loja preferida e come&ccedil;ar a brincadeira. Vai aparecer um bot&atilde;o pra fazer o research, clique nele e v&aacute; fazendo sua procura. Para al&eacute;m disso, o aliprice lhe entrega uma planilha com as m&eacute;tricas de cada fornecedor pra checar a reputa&ccedil;&atilde;o.</em></strong>
+					</p>
+
+					<p style="text-align: center;">
+						&nbsp;
+					</p>
+				</div>
+			</div>
+
+			<div class="glass-box">
+				<p>
+					<b style="font-size: 22px; background-color: initial;">Usando essa estrat&eacute;gia pra garimpar fornecedores voc&ecirc; vai conseguir multiplicar em talvez at&eacute; 5x seu lucro com ecommerce. J&aacute; deixa uma rea&ccedil;&atilde;o e um coment&aacute;rio pra eu trazer mais posts aqui <img alt="😈" class="ipsEmoji" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f608.png"></b>
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+        // Add touch event support for better mobile interaction
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add touch class to body for touch devices
+            if ('ontouchstart' in window || navigator.maxTouchPoints) {
+                document.body.classList.add('touch-device');
+            }
+
+            // Enhance touch responsiveness for interactive elements
+            const interactiveElements = document.querySelectorAll('.macos-button, .content-box, .glass-box, .macos-tab, .content-text a');
+            
+            interactiveElements.forEach(element => {
+                // Add touch feedback
+                element.addEventListener('touchstart', function(e) {
+                    this.style.transition = 'all 0.1s ease';
+                }, { passive: true });
+
+                element.addEventListener('touchend', function(e) {
+                    this.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+                }, { passive: true });
+            });
+
+            // Prevent default touch behaviors that might interfere
+            document.addEventListener('touchstart', function(e) {
+                if (e.target.closest('.macos-button, .content-box, .glass-box')) {
+                    // Allow the touch but prevent unwanted behaviors
+                }
+            }, { passive: true });
+        });
+    </script>
+
+<p>
+	<a class="ipsAttachLink ipsAttachLink_image" data-fileext="png" data-fileid="7693" href="//media.invisioncic.com/r328678/monthly_2025_06/Capturadetela2025-06-15230756.png.f86013341336c16cf5693af06758c69c.png" rel=""><img alt="Captura de tela 2025-06-15 230756.png" class="ipsImage ipsImage_thumbnailed" data-fileid="7693" data-loaded="true" data-ratio="41.3" data-src="//media.invisioncic.com/r328678/monthly_2025_06/Capturadetela2025-06-15230756.thumb.png.a87850d0994b0861dea8b3dc11f98276.png" src="https://blacksidersociety.com/applications/core/interface/js/spacer.png" style="height: auto;" width="1000"></a>
+</p>
